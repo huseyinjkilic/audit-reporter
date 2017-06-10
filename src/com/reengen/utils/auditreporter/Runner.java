@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 public class Runner {
 
     private List<List<String>> users;
-    private List<List<String>> files;
+    private List<List<String>> fileList;
+    private static final String SEPRARATOR = ",";
 
     public static void main(String[] args) throws IOException {
         Runner r = new Runner();
@@ -27,7 +28,7 @@ public class Runner {
             String userName = userRow.get(1);
 
             printUserHeader(userName);
-            for (List<String> fileRow : files) {
+            for (List<String> fileRow : fileList) {
                 String fileId = fileRow.get(0);
                 long size = Long.parseLong(fileRow.get(1));
                 String fileName = fileRow.get(2);
@@ -40,28 +41,35 @@ public class Runner {
     }
 
     private void loadData(String userFn, String filesFn) throws IOException {
-        String line;
      
-        try(BufferedReader userReader = new BufferedReader(new FileReader(userFn))) {
+        try(BufferedReader user = new BufferedReader(new FileReader(userFn))) {
             users = new ArrayList<List<String>>();
-
-            userReader.readLine(); // skip header
-
-            while ((line = userReader.readLine()) != null) {
-                users.add(Arrays.asList(line.split(",")));
-            }
+            List<List<String>> linesOfFile;
+            
+            linesOfFile = user.lines()
+            		.skip(1)
+            		.map(lineInsideFile -> Arrays.asList(lineInsideFile.split(SEPRARATOR)))
+            		.collect(Collectors.toList());
+            
+            linesOfFile.forEach(string -> {users.add(string);});
+            
         } 
         
-        try(BufferedReader fileReader = new BufferedReader(new FileReader(filesFn))) {
-            files = new ArrayList<List<String>>();
-
-            fileReader.readLine(); // skip header
-
-            while ((line = fileReader.readLine()) != null) {
-                files.add(Arrays.asList(line.split(",")));
-            }
+        
+        
+        try(BufferedReader file = new BufferedReader(new FileReader(filesFn))) {
+            fileList = new ArrayList<List<String>>();
+            List<List<String>> linesOfFile;
+            
+            linesOfFile = file.lines()
+            		.skip(1)
+            		.map(lineInsideFile -> Arrays.asList(lineInsideFile.split(SEPRARATOR)))
+            		.collect(Collectors.toList());
+            
+            linesOfFile.forEach(string -> {fileList.add(string);});
         } 
-    } 
+    }
+    
 
     private void printHeader() {
         System.out.println("Audit Report");
