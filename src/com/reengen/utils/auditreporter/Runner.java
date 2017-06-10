@@ -17,8 +17,23 @@ public class Runner {
 
     public static void main(String[] args) throws IOException {
         Runner r = new Runner();
-        r.loadData(args[0], args[1]);
-        r.run();
+        
+        if(args.length == 2) {
+            r.loadData(args[0], args[1]);
+            r.run();
+        } else if(args.length == 3) {
+        	if(args[2].toString().equalsIgnoreCase("-c")) {
+        		System.out.println("-c");
+        	}
+        } else if(args.length == 4) {
+        	if(args[2].toString().equalsIgnoreCase("--top")) {
+        		System.out.println(args[3]);
+        	}
+        } else {
+        	System.err.println("Wrong usage..");
+        	
+        }
+
     }
 
     private void run() {
@@ -42,6 +57,7 @@ public class Runner {
 
     private void loadData(String userFn, String filesFn) throws IOException {
      
+    	//TODO: Refactor this method for DRY
         try(BufferedReader user = new BufferedReader(new FileReader(userFn))) {
             users = new ArrayList<List<String>>();
             List<List<String>> linesOfFile;
@@ -54,8 +70,6 @@ public class Runner {
             linesOfFile.forEach(string -> {users.add(string);});
             
         } 
-        
-        
         
         try(BufferedReader file = new BufferedReader(new FileReader(filesFn))) {
             fileList = new ArrayList<List<String>>();
