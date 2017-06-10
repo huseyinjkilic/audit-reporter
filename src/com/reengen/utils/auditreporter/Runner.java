@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Runner {
 
@@ -40,39 +41,27 @@ public class Runner {
 
     private void loadData(String userFn, String filesFn) throws IOException {
         String line;
-
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(userFn));
+     
+        try(BufferedReader userReader = new BufferedReader(new FileReader(userFn))) {
             users = new ArrayList<List<String>>();
 
-            reader.readLine(); // skip header
+            userReader.readLine(); // skip header
 
-            while ((line = reader.readLine()) != null) {
+            while ((line = userReader.readLine()) != null) {
                 users.add(Arrays.asList(line.split(",")));
             }
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
-
-        reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(filesFn));
+        } 
+        
+        try(BufferedReader fileReader = new BufferedReader(new FileReader(filesFn))) {
             files = new ArrayList<List<String>>();
 
-            reader.readLine(); // skip header
+            fileReader.readLine(); // skip header
 
-            while ((line = reader.readLine()) != null) {
+            while ((line = fileReader.readLine()) != null) {
                 files.add(Arrays.asList(line.split(",")));
             }
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
-    }
+        } 
+    } 
 
     private void printHeader() {
         System.out.println("Audit Report");
