@@ -49,7 +49,7 @@ public class Runner {
         
     }
 
-    private void run(String outputMode) {
+    public void run(String outputMode) {
     	
     	if(outputMode.equals(DEFAULT)) {
     		printHeader();
@@ -63,53 +63,39 @@ public class Runner {
             	printUserHeader(userName);
             }
             
-            for (List<String> fileRow : fileList) {
-                long fileSize = Long.parseLong(fileRow.get(1));
-                String fileName = fileRow.get(2);
-                long ownerUserId = Long.parseLong(fileRow.get(3));
-                if (ownerUserId == userId) {
-                	if(outputMode.equalsIgnoreCase(DEFAULT)) {
-                		printFile(fileName, fileSize);
-                	} else {
-                		System.out.println(fileName + SEPRARATOR + userName + SEPRARATOR + fileSize);
-                	}
-                }
-            }
-        }
-    }
+            fileAuditList = getFileList();
+            
+	            for (FileForAuditReporter fileInformation : fileAuditList) {
+					if(fileInformation.getOwnerUserID() == userId) {
+	                	if(outputMode.equalsIgnoreCase(DEFAULT)) {
+	                		System.out.println(printFile(fileInformation.getFileName(), fileInformation.getFileSize()));
+	                	} else {
+	                		System.out.println(fileInformation.getFileName() + SEPRARATOR + userName + SEPRARATOR + fileInformation.getFileSize());
+	                	}
+					}
+				}
+         }
+     }
 
 
-       private void printTopFileSize(String mode, int limit) {
+    public void printTopFileSize(String mode, int limit) {
     	   
-    	   userList = new HashMap<Long, String>();
-    	   for(List<String> userRow : users) {
-    		   userList.put(Long.valueOf(userRow.get(0)), userRow.get(1));
-    	   }
+    	   userList = getUserList();
     	
-    	   fileAuditList= new ArrayList<FileForAuditReporter>();
-
-	            for (List<String> fileRow : fileList) {
-	            	FileForAuditReporter tempObjectForList = new FileForAuditReporter();
-	            	tempObjectForList.setFileID(fileRow.get(0));
-	            	tempObjectForList.setFileSize(Long.valueOf(fileRow.get(1)));
-	            	tempObjectForList.setFileName(fileRow.get(2));
-	            	tempObjectForList.setOwnerUserID(Long.valueOf(fileRow.get(3)));
-	            	fileAuditList.add(tempObjectForList);
-	            }	        
-	       
-	            Collections.sort(fileAuditList, Collections.reverseOrder());
+    	   fileAuditList = getFileList();
+	       Collections.sort(fileAuditList, Collections.reverseOrder());
 	            
-	            if(mode.equalsIgnoreCase(CSV)) {
-	            	fileAuditList.stream().limit(limit).forEach(lineOfAudit -> System.out.println(lineOfAudit.fileName + SEPRARATOR + userList.get(lineOfAudit.getOwnerUserID())  + SEPRARATOR  + lineOfAudit.fileSize ));	
-	            } else if(mode.equalsIgnoreCase(DEFAULT)) {
-	            	printHeader();
-	            	for(int i = 0; i<limit; i++) {
-	            		printTopFile(fileAuditList.get(i).getFileName(), userList.get(fileAuditList.get(i).getOwnerUserID()), fileAuditList.get(i).getFileSize());
-	            	}
-	            }
+	       if(mode.equalsIgnoreCase(CSV)) {
+	           	fileAuditList.stream().limit(limit).forEach(lineOfAudit -> System.out.println(lineOfAudit.fileName + SEPRARATOR + userList.get(lineOfAudit.getOwnerUserID())  + SEPRARATOR  + lineOfAudit.fileSize ));	
+	        } else if(mode.equalsIgnoreCase(DEFAULT)) {
+	           	printHeader();
+	         	for(int i = 0; i<limit; i++) {
+	          		System.out.println(printTopFile(fileAuditList.get(i).getFileName(), userList.get(fileAuditList.get(i).getOwnerUserID()), fileAuditList.get(i).getFileSize()));
+	           	}
+	         }
        }
 
-    private void loadData(String userFn, String filesFn) throws IOException {
+    public void loadData(String userFn, String filesFn) throws IOException {
      
         try(BufferedReader user = new BufferedReader(new FileReader(userFn))) {
             users = new ArrayList<List<String>>();
@@ -137,23 +123,48 @@ public class Runner {
         } 
     }
     
+    public ArrayList<FileForAuditReporter> getFileList() {
+    	
+ 	   fileAuditList = new ArrayList<FileForAuditReporter>();
 
-    private void printHeader() {
+       for (List<String> fileRow : fileList) {
+	       	FileForAuditReporter tempObjectForList = new FileForAuditReporter();
+	       	tempObjectForList.setFileID(fileRow.get(0));
+	       	tempObjectForList.setFileSize(Long.valueOf(fileRow.get(1)));
+	       	tempObjectForList.setFileName(fileRow.get(2));
+	       	tempObjectForList.setOwnerUserID(Long.valueOf(fileRow.get(3)));
+	       	fileAuditList.add(tempObjectForList);
+       }
+       
+       return (ArrayList<FileForAuditReporter>) fileAuditList;
+    }
+    
+   public Map<Long, String> getUserList() {
+	   userList = new HashMap<Long, String>();
+	   for(List<String> userRow : users) {
+		   userList.put(Long.valueOf(userRow.get(0)), userRow.get(1));
+	   }
+	   
+	   return userList;
+   }
+    
+
+    public void printHeader() {
         System.out.println("Audit Report");
         System.out.println("============");
     }
 
-    private void printUserHeader(String userName) {
-        System.out.println("## User: " + userName);
+    public String printUserHeader(String userName) {
+        return "## User: " + userName;
     }
 
-    private void printFile(String fileName, long fileSize) {
-        System.out.println("* " + fileName + " ==> " + fileSize + " bytes");
+    public String printFile(String fileName, long fileSize) {
+        return "* " + fileName + " ==> " + fileSize + " bytes";
         
     }
     
-    private void printTopFile(String fileName, String userName, long fileSize) {
-    	System.out.println("* " + fileName + " ==> " + "user " + userName + ", " + fileSize + " bytes");
+    public String printTopFile(String fileName, String userName, long fileSize) {
+    	return "* " + fileName + " ==> " + "user " + userName + ", " + fileSize + " bytes";
     }
     
 }
