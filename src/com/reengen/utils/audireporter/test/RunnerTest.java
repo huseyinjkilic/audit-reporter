@@ -28,12 +28,12 @@ public class RunnerTest {
 	}
 
 	@Test
-	public void usernameTestForCorrectInput() {
+	public void testUsernameMethodForCorrectInput() {
 			assertTrue("## User: userTest".equals(runnerTest.printUserHeader("userTest")));
 	}
 	
 	@Test
-	public void usernameTestForWrongInput() {
+	public void testUsernameMethodForWrongInput() {
 			assertFalse("## User: userTest".equals(runnerTest.printUserHeader("userTestFalse")));
 			
 	}
