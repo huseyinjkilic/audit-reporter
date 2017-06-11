@@ -3,6 +3,7 @@ package com.reengen.utils.audireporter.test;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.junit.After;
@@ -10,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.reengen.utils.auditreporter.FileForAuditReporter;
 import com.reengen.utils.auditreporter.Runner;
 
 public class RunnerTest {
@@ -61,8 +63,15 @@ public class RunnerTest {
 	}
 	
 	@Test
-	public void testUserListSizeForWrongSize2() {
-		Map<Long, String> userList = runnerTest.getUserList();
-		assertFalse(userList.size() == 3);
-	}	
+	public void testFileListSizeForCorrectSize() {
+		ArrayList<FileForAuditReporter> fileList = runnerTest.getFileList();
+		assertTrue(fileList.size() == 5);
+	}
+	
+	@Test
+	public void testFileListSizeForWrongSize() {
+		ArrayList<FileForAuditReporter> fileList = runnerTest.getFileList();		
+		assertFalse(fileList.size() == 3);
+		
+	}
 }
