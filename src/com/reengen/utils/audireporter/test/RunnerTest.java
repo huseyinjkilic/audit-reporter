@@ -43,5 +43,11 @@ public class RunnerTest {
 		Map<Long, String> userList = runnerTest.getUserList();
 		assertTrue(userList.size() == 2);
 	}
+	
+	@Test
+	public void testUserListSizeForWrongSize() {
+		Map<Long, String> userList = runnerTest.getUserList();
+		assertFalse(userList.size() == 3);
+	}
 
 }
