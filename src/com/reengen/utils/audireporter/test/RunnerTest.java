@@ -17,8 +17,6 @@ public class RunnerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		String[] argsForTest = {"resources" + File.separator + "users.csv", "resources" + File.separator + "files.csv"};
-		
 		runnerTest.loadData("resources" + File.separator + "users.csv", "resources" + File.separator + "files.csv");
 	}
 
@@ -39,9 +37,15 @@ public class RunnerTest {
 	}
 	
 	@Test
-	public void testUserListSize() {
+	public void testUserInformationForJpublicUser() {
 		Map<Long, String> userList = runnerTest.getUserList();
-		assertTrue(userList.size() == 2);
+		assertTrue(userList.get(new Long(1)).equals("jpublic"));
+	}
+	
+	@Test
+	public void testUserInformationForAtesterUser() {
+		Map<Long, String> userList = runnerTest.getUserList();
+		assertFalse(userList.get(new Long(2)).equals("jpublic"));
 	}
 	
 	@Test
@@ -49,5 +53,16 @@ public class RunnerTest {
 		Map<Long, String> userList = runnerTest.getUserList();
 		assertFalse(userList.size() == 3);
 	}
-
+	
+	@Test
+	public void testUserListSize() {
+		Map<Long, String> userList = runnerTest.getUserList();
+		assertTrue(userList.size() == 2);
+	}
+	
+	@Test
+	public void testUserListSizeForWrongSize2() {
+		Map<Long, String> userList = runnerTest.getUserList();
+		assertFalse(userList.size() == 3);
+	}	
 }
