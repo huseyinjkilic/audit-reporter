@@ -3,6 +3,7 @@ package com.reengen.utils.audireporter.test;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.Map;
 
 import org.junit.After;
 
@@ -17,10 +18,8 @@ public class RunnerTest {
 	@Before
 	public void setUp() throws Exception {
 		String[] argsForTest = {"resources" + File.separator + "users.csv", "resources" + File.separator + "files.csv"};
-
 		
-		
-		
+		runnerTest.loadData("resources" + File.separator + "users.csv", "resources" + File.separator + "files.csv");
 	}
 
 	@After
@@ -40,8 +39,9 @@ public class RunnerTest {
 	}
 	
 	@Test
-	public void test() {
-
+	public void testUserListSize() {
+		Map<Long, String> userList = runnerTest.getUserList();
+		assertTrue(userList.size() == 2);
 	}
 
 }
